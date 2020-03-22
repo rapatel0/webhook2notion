@@ -7,23 +7,23 @@ from flask import request
 
 app = Flask(__name__)
 
-
-def createNotionTask(token, collectionURL, content):
+def createNotionRowGeneric(token, collectionURL, request):
     # notion
     client = NotionClient(token)
     cv = client.get_collection_view(collectionURL)
     row = cv.collection.add_row()
-    row.title = content
+    for key in request.args.keys():
+        setattr(row, key, request.args.get(key)) 
 
 
-@app.route('/create_todo', methods=['GET'])
-def create_todo():
 
-    todo = request.args.get('todo')
+@app.route('/create_row', methods=['GET'])
+def add_generic():
     token_v2 = os.environ.get("TOKEN")
-    url = os.environ.get("URL")
-    createNotionTask(token_v2, url, todo)
+    url = request.args.get('notionurl')
+    createNotionRowGeneric(token_v2, url, request )
     return f'added {todo} to Notion'
+
 
 
 if __name__ == '__main__':
