@@ -10,9 +10,11 @@ app = Flask(__name__)
 def createNotionRowGeneric(token, collectionURL, request):
     # notion
     client = NotionClient(token)
+    print('notion-url- {}'.format(collectionURL))
     cv = client.get_collection_view(collectionURL)
     row = cv.collection.add_row()
     for key in request.args.keys():
+        print('key - {} -'.format(key))
         setattr(row, key, request.args.get(key)) 
 
 
