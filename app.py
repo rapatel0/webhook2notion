@@ -21,6 +21,7 @@ def createNotionRowGeneric(token, collectionURL, request):
 
 @app.route('/create_row', methods=['GET'])
 def add_generic():
+    print(request.args)
     token_v2 = os.environ.get("TOKEN")
     url = request.args.get('notionurl')
     createNotionRowGeneric(token_v2, url, request )
