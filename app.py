@@ -13,7 +13,9 @@ def createNotionRowGeneric(token, collectionURL, request):
     print('notion-url- {}'.format(collectionURL))
     cv = client.get_collection_view(collectionURL)
     row = cv.collection.add_row()
-    for key in request.args.keys():
+    request_keys = request.headers.keys()
+    notion_keys = row.get_all_properties().keys()
+    for key in intersection(request_keys,notion_keys):
         print('key - {} -'.format(key))
         setattr(row, key, request.args.get(key)) 
 
