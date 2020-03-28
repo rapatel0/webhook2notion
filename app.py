@@ -25,13 +25,12 @@ class LoggingMiddleware(object):
 
 app = Flask(__name__)
 
-def createNotionRowGeneric(token, collectionURL, request):
+def createNotionRowGeneric(token, collectionURL, request_key):
     # notion
     client = NotionClient(token)
     print('notion-url- {}'.format(collectionURL))
     cv = client.get_collection_view(collectionURL)
     row = cv.collection.add_row()
-    request_keys = request.headers.keys()
     notion_keys = row.get_all_properties().keys()
     for key in intersection(request_keys,notion_keys):
         print('key - {} -'.format(key))
@@ -44,7 +43,8 @@ def add_generic():
     print(request.headers)
     token_v2 = os.environ.get("TOKEN")
     url = request.headers.get('notionurl')
-    createNotionRowGeneric(token_v2, url, request )
+    request_keys = request.headers.keys()
+    createNotionRowGeneric(token_v2, url, request_keys )
     return f'added {todo} to Notion'
 
 
@@ -53,4 +53,4 @@ if __name__ == '__main__':
     app.debug = True
     port = int(os.environ.get("PORT", 5000))
     app.wsgi_app = LoggingMiddleware(app.wsgi_app)
-    app.run(host='0.0.0.0', port=port)
+    #app.run(host='0.0.0.0', port=port)
