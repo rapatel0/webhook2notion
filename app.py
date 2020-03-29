@@ -1,6 +1,7 @@
 
 import os
 from notion.client import NotionClient
+from notion.block  import TextBlock
 from flask import Flask
 from flask import request
 
@@ -39,10 +40,12 @@ def createNotionRowGeneric(token, collectionURL, request):
     for key in (request_keys & notion_keys):
         print('key - {} -'.format(key))
         setattr(row, key, request.headers.get(key)) 
+    data = dict(request.get_json())
+    for key in data:
+        row.children.add_new(TextBlock, title=data[key]) 
 
 
-
-@app.route('/create_row', methods=['GET'])
+@app.route('/create_row', methods=['GET', 'POST'])
 def add_generic():
     print(request.headers)
     token_v2 = os.environ.get("TOKEN")
