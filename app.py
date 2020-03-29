@@ -25,16 +25,20 @@ class LoggingMiddleware(object):
 
 app = Flask(__name__)
 
-def createNotionRowGeneric(token, collectionURL, request_keys):
+def createNotionRowGeneric(token, collectionURL, request):
     # notion
     client = NotionClient(token)
     print('notion-url- {}'.format(collectionURL))
     cv = client.get_collection_view(collectionURL)
+    
+    dd = cv.collection.query() ## hack to initialize the view
     row = cv.collection.add_row()
-    notion_keys = row.get_all_properties().keys()
-    for key in intersection(request_keys,notion_keys):
+    request_dict = dict(request.headers)
+    request_keys = set(request_dict.keys())
+    notion_keys = set([i.capitalize() for i in list(row.get_all_properties().keys())])
+    for key in (request_keys & notion_keys):
         print('key - {} -'.format(key))
-        setattr(row, key, request.args.get(key)) 
+        setattr(row, key, request.headers.get(key)) 
 
 
 
@@ -42,10 +46,9 @@ def createNotionRowGeneric(token, collectionURL, request_keys):
 def add_generic():
     print(request.headers)
     token_v2 = os.environ.get("TOKEN")
-    url = request.headers.get('notionurl')
-    request_keys = request.headers.keys()
-    createNotionRowGeneric(token_v2, url, request_keys )
-    return f'added {todo} to Notion'
+    url = request.headers.get('notionurl') 
+    createNotionRowGeneric(token_v2, url, request )
+    return f'added row to Notion'
 
 
 
