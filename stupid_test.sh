@@ -1,0 +1,1 @@
+curl -iX POST -H "Content-Type: application/json" --header "uid: TIF-431"  --header  "notionurl: https://www.notion.so/kmed/72895252cc6e4fb291a3250cd72dfc48?v=71424d6185074e049e24e11f84d0f583"  --header "title: DAATA TEST"   -d '{"message":"eSports competition starts in 2 minutes", "ttl":20, "notification_category": "Information"}' "localhost:5000/create_row"
